@@ -1,0 +1,66 @@
+.rating-buttons {
+    margin-top: 10px;
+}
+
+.rating-label {
+    color: white;
+    margin-bottom: 12px;
+    font-size: 16px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.rating-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.rate-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 16px;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-weight: bold;
+}
+
+.rate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.rate-btn:active {
+    transform: translateY(0);
+}
+
+.rate-emoji {
+    font-size: 24px;
+}
+
+.rate-label {
+    font-size: 14px;
+}
+
+.rate-btn.again {
+    background: #ff4757;
+    color: white;
+}
+
+.rate-btn.hard {
+    background: #ffa502;
+    color: white;
+}
+
+.rate-btn.good {
+    background: #2ed573;
+    color: white;
+}
+
+.rate-btn.easy {
+    background: #3742fa;
+    color: white;
+}
