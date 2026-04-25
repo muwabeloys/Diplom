@@ -30,7 +30,7 @@ Backend: http://localhost:5000
 ## Аутентификация
 ### Регистарция: POST /api/auth/register  
 
-{
+{  
   "username": "student",  
   "email": "student@test.com",  
   "password": "123456"  
@@ -38,7 +38,7 @@ Backend: http://localhost:5000
 
 ### Вход: POST /api/auth/login 
 
-{
+{  
   "email": "student@test.com",  
   "password": "123456"  
 }
