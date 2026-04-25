@@ -1,0 +1,14 @@
+{
+    "name": "diplom-language-app",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "install:all": "cd server && npm install && cd ../client && npm install",
+        "dev": "concurrently -n SERVER,CLIENT -c blue,green \"cd server && npm run dev\" \"cd client && npm run dev\"",
+        "server": "cd server && npm run dev",
+        "client": "cd client && npm run dev"
+    },
+    "devDependencies": {
+        "concurrently": "^9.0.1"
+    }
+}
