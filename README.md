@@ -33,10 +33,10 @@ Backend: http://localhost:5000
 Профиль: GET /api/auth/profile
 
 ## Слова
-Слова для изучения: GET /api/words/study
-Добавить слово: POST /api/words
-Оценить слово: PUT	/api/words/:id/review
-Категории: GET	/api/words/categories
+Слова для изучения: GET /api/words/study 
+Добавить слово: POST /api/words 
+Оценить слово: PUT	/api/words/:id/review 
+Категории: GET	/api/words/categories 
 
 ## 🔑 Функциональность
 - Регистрация и авторизация (JWT)
