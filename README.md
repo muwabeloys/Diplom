@@ -32,7 +32,7 @@ Backend: http://localhost:5000
 Вход: POST /api/auth/login
 Профиль: GET /api/auth/profile
 
-##Слова
+## Слова
 Слова для изучения: GET /api/words/study
 Добавить слово: POST /api/words
 Оценить слово: PUT	/api/words/:id/review
