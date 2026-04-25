@@ -22,5 +22,5 @@ app.get('/api/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`\n🚀 Сервер запущен на http://localhost:${PORT}\n`);
+    console.log(`\n Сервер запущен на http://localhost:${PORT}\n`);
 });

@@ -28,9 +28,22 @@ Backend: http://localhost:5000
 # API Endpoints
 
 ## Аутентификация
-Регистарция: POST /api/auth/register  
-Вход: POST /api/auth/login  
-Профиль: GET /api/auth/profile  
+### Регистарция: POST /api/auth/register  
+
+{
+  "username": "student",
+  "email": "student@test.com",
+  "password": "123456"
+}  
+
+### Вход: POST /api/auth/login 
+
+{
+  "email": "student@test.com",
+  "password": "123456"
+}
+
+### Профиль: GET /api/auth/profile  
 
 ## Слова
 Слова для изучения: GET /api/words/study  
