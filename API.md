@@ -228,3 +228,45 @@ GET /api/words/study?language=en&limit=5
 ### `GET /api/words/categories`
 Требуется токен: ✅
 
+### Пример запроса:
+GET /api/words/categories?language=en  
+
+### Успешный ответ (200):
+{
+  "categories": [
+    {
+      "category": "basics",
+      "total": 10,
+      "learned": 1
+    },
+    {
+      "category": "food",
+      "total": 5,
+      "learned": 0
+    },
+    {
+      "category": "travel",
+      "total": 5,
+      "learned": 0
+    },
+    {
+      "category": "work",
+      "total": 5,
+      "learned": 2
+    },
+    {
+      "category": "hobbies",
+      "total": 5,
+      "learned": 0
+    }
+  ]
+}
+
+**📊 Категории слов**
+|Категория|Описание      |
+|---------|--------------|
+|basics   |Основные фразы|
+|food     |Еда и напитки | 
+|travel   |Путешествия   |
+|work     |Работа и офис |
+|hobbies  |Хобби и досуг |
