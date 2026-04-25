@@ -31,16 +31,16 @@ Backend: http://localhost:5000
 ### Регистарция: POST /api/auth/register  
 
 {
-  "username": "student",
-  "email": "student@test.com",
-  "password": "123456"
+  "username": "student",  
+  "email": "student@test.com",  
+  "password": "123456"  
 }  
 
 ### Вход: POST /api/auth/login 
 
 {
-  "email": "student@test.com",
-  "password": "123456"
+  "email": "student@test.com",  
+  "password": "123456"  
 }
 
 ### Профиль: GET /api/auth/profile  
