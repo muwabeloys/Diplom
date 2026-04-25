@@ -21,9 +21,9 @@ npm run dev
 cd client
 npm run dev
 
-⚠️ Сервер и клиент запускаются в разных терминалах из соответствующих папок.
-Frontend: http://localhost:5173
-Backend: http://localhost:5000
+⚠️ Сервер и клиент запускаются в разных терминалах из соответствующих папок.  
+Frontend: http://localhost:5173  
+Backend: http://localhost:5000  
 
 # API Endpoints
 
@@ -33,10 +33,10 @@ Backend: http://localhost:5000
 Профиль: GET /api/auth/profile  
 
 ## Слова
-Слова для изучения: GET /api/words/study 
-Добавить слово: POST /api/words 
-Оценить слово: PUT	/api/words/:id/review 
-Категории: GET	/api/words/categories 
+Слова для изучения: GET /api/words/study  
+Добавить слово: POST /api/words  
+Оценить слово: PUT	/api/words/:id/review  
+Категории: GET	/api/words/categories  
 
 ## 🔑 Функциональность
 - Регистрация и авторизация (JWT)
