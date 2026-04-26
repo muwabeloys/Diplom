@@ -120,30 +120,35 @@ function getLoginHTML() {
   </div>
   <script>
     document.getElementById('loginForm').onsubmit = async (e) => {
-      e.preventDefault();
-      try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            email: e.target.email.value,
-            password: e.target.password.value
-          })
-        });
-        const data = await res.json();
-        if (data.token) {
-          localStorage.setItem('admin_token', data.token);
-          window.location.href = '/admin';
-        } else {
-          document.getElementById('error').textContent = data.error || 'Ошибка входа';
-          document.getElementById('error').style.display = 'block';
+        e.preventDefault();
+        const errorEl = document.getElementById('error');
+        errorEl.style.display = 'none';
+        
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    email: e.target.email.value,
+                    password: e.target.password.value
+                })
+            });
+            
+            const data = await res.json();
+            
+            if (data.token) {
+                localStorage.setItem('admin_token', data.token);
+                window.location.href = '/admin';
+            } else {
+                errorEl.textContent = data.error || 'Ошибка входа';
+                errorEl.style.display = 'block';
+            }
+        } catch(err) {
+            errorEl.textContent = 'Ошибка соединения с сервером';
+            errorEl.style.display = 'block';
         }
-      } catch(err) {
-        document.getElementById('error').textContent = 'Ошибка сервера';
-        document.getElementById('error').style.display = 'block';
-      }
     };
-  </script>
+</script>
 </body>
 </html>`;
 }
@@ -242,94 +247,162 @@ function getAdminHTML() {
 
   <script>
     const token = localStorage.getItem('admin_token');
-    if (!token) window.location.href = '/admin/login';
+    if (!token) {
+        window.location.href = '/admin/login';
+    }
+
+    // Проверяем, что токен валидный и пользователь — админ
+    async function checkAccess() {
+        try {
+            const res = await fetch('/api/auth/profile', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) {
+                localStorage.removeItem('admin_token');
+                window.location.href = '/admin/login';
+                return false;
+            }
+            const data = await res.json();
+            document.getElementById('adminName').textContent = '👤 ' + data.user.username;
+            
+            // Проверяем роль через запрос к админскому API
+            const adminCheck = await fetch('/admin/api/stats', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!adminCheck.ok) {
+                alert('У вас нет прав администратора!');
+                window.location.href = '/';
+                return false;
+            }
+            return true;
+        } catch(e) {
+            localStorage.removeItem('admin_token');
+            window.location.href = '/admin/login';
+            return false;
+        }
+    }
 
     const categoryNames = { basics: '📝 Основы', food: '🍽️ Еда', travel: '✈️ Путешествия', work: '💼 Работа', hobbies: '🎨 Хобби' };
 
     async function api(url, method = 'GET', body = null) {
-      const opts = { method, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } };
-      if (body) opts.body = JSON.stringify(body);
-      const res = await fetch(url, opts);
-      if (res.status === 403) { logout(); return null; }
-      return res.json();
+        const opts = { 
+            method, 
+            headers: { 
+                'Authorization': 'Bearer ' + token, 
+                'Content-Type': 'application/json' 
+            } 
+        };
+        if (body) opts.body = JSON.stringify(body);
+        
+        try {
+            const res = await fetch(url, opts);
+            if (res.status === 403) { 
+                alert('Доступ запрещён! Только для администратора.');
+                logout(); 
+                return null; 
+            }
+            if (res.status === 401) {
+                logout();
+                return null;
+            }
+            return res.json();
+        } catch(e) {
+            console.error('API Error:', e);
+            return null;
+        }
     }
 
     async function loadDashboard() {
-      const data = await api('/admin/api/stats');
-      if (!data) return;
-      
-      const s = data.stats;
-      document.getElementById('statsGrid').innerHTML = 
-        '<div class="stat-card"><h3>Пользователи</h3><div class="value">'+s.users+'</div></div>' +
-        '<div class="stat-card"><h3>Слова</h3><div class="value">'+s.words+'</div></div>' +
-        '<div class="stat-card"><h3>Админы</h3><div class="value">'+s.admins+'</div></div>' +
-        '<div class="stat-card"><h3>Категорий</h3><div class="value">'+s.byCategory.length+'</div></div>';
+        const hasAccess = await checkAccess();
+        if (!hasAccess) return;
+        
+        const data = await api('/admin/api/stats');
+        if (!data) return;
+        
+        const s = data.stats;
+        document.getElementById('statsGrid').innerHTML = 
+            '<div class="stat-card"><h3>Пользователи</h3><div class="value">'+s.users+'</div></div>' +
+            '<div class="stat-card"><h3>Слова</h3><div class="value">'+s.words+'</div></div>' +
+            '<div class="stat-card"><h3>Админы</h3><div class="value">'+s.admins+'</div></div>' +
+            '<div class="stat-card"><h3>Категорий</h3><div class="value">'+s.byCategory.length+'</div></div>';
 
-      let html = '';
-      s.topUsers.forEach(u => {
-        html += '<tr><td>'+u.username+'</td><td>'+u.total+' слов</td><td>'+u.learned+' изучено</td></tr>';
-      });
-      document.querySelector('#topUsersTable tbody').innerHTML = html;
+        let html = '';
+        if (s.topUsers && s.topUsers.length > 0) {
+            s.topUsers.forEach(u => {
+                html += '<tr><td>'+u.username+'</td><td>'+u.total+' слов</td><td>'+u.learned+' изучено</td></tr>';
+            });
+        } else {
+            html = '<tr><td colspan="3">Нет данных</td></tr>';
+        }
+        document.querySelector('#topUsersTable tbody').innerHTML = html;
     }
 
     async function loadUsers() {
-      const data = await api('/admin/api/users');
-      if (!data) return;
-      
-      let html = '';
-      data.users.forEach(u => {
-        html += '<tr>' +
-          '<td>'+u.id+'</td>' +
-          '<td><strong>'+u.username+'</strong></td>' +
-          '<td>'+u.email+'</td>' +
-          '<td><span class="badge badge-'+u.role+'">'+u.role+'</span></td>' +
-          '<td>'+u.total_words+' / '+u.learned_words+'</td>' +
-          '<td>'+new Date(u.created_at).toLocaleDateString()+'</td>' +
-          '<td>' +
-            '<button class="btn btn-info btn-sm" onclick="viewWords('+u.id+', \''+u.username+'\')">📚</button> ' +
-            (u.role !== 'admin' ? '<button class="btn btn-danger btn-sm" onclick="deleteUser('+u.id+')">🗑</button>' : '') +
-          '</td>' +
-        '</tr>';
-      });
-      document.querySelector('#usersTable tbody').innerHTML = html;
+        const data = await api('/admin/api/users');
+        if (!data) return;
+        
+        let html = '';
+        if (data.users && data.users.length > 0) {
+            data.users.forEach(u => {
+                html += '<tr>' +
+                    '<td>'+u.id+'</td>' +
+                    '<td><strong>'+u.username+'</strong></td>' +
+                    '<td>'+u.email+'</td>' +
+                    '<td><span class="badge badge-'+(u.role === 'admin' ? 'admin' : 'user')+'">'+u.role+'</span></td>' +
+                    '<td>'+u.total_words+' / '+u.learned_words+'</td>' +
+                    '<td>'+new Date(u.created_at).toLocaleDateString()+'</td>' +
+                    '<td>' +
+                        '<button class="btn btn-info btn-sm" onclick="viewWords('+u.id+', \''+u.username+'\')">📚</button> ' +
+                        (u.role !== 'admin' ? '<button class="btn btn-danger btn-sm" onclick="deleteUser('+u.id+')">🗑</button>' : '') +
+                    '</td>' +
+                '</tr>';
+            });
+        } else {
+            html = '<tr><td colspan="7">Нет пользователей</td></tr>';
+        }
+        document.querySelector('#usersTable tbody').innerHTML = html;
     }
 
     function showTab(name) {
-      document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById('tab-'+name).classList.remove('hidden');
-      document.getElementById('nav-'+name).classList.add('active');
-      
-      if (name === 'dashboard') loadDashboard();
-      if (name === 'users') loadUsers();
+        document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('nav a').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById('tab-'+name).classList.remove('hidden');
+        document.getElementById('nav-'+name).classList.add('active');
+        
+        if (name === 'dashboard') loadDashboard();
+        if (name === 'users') loadUsers();
     }
 
     async function viewWords(id, name) {
-      const data = await api('/admin/api/users/'+id+'/words');
-      if (!data) return;
-      
-      let html = '';
-      data.words.forEach(w => {
-        html += '<tr><td><strong>'+w.word+'</strong></td><td>'+w.translation+'</td><td>'+(categoryNames[w.category]||w.category)+'</td><td>'+'⭐'.repeat(Math.min(w.level,5))+'</td><td>'+w.review_count+'</td></tr>';
-      });
-      document.querySelector('#wordsTable tbody').innerHTML = html;
-      document.getElementById('wordsModal').classList.add('show');
+        const data = await api('/admin/api/users/'+id+'/words');
+        if (!data) return;
+        
+        let html = '';
+        if (data.words && data.words.length > 0) {
+            data.words.forEach(w => {
+                html += '<tr><td><strong>'+w.word+'</strong></td><td>'+w.translation+'</td><td>'+(categoryNames[w.category]||w.category)+'</td><td>'+'⭐'.repeat(Math.min(w.level,5))+'</td><td>'+w.review_count+'</td></tr>';
+            });
+        } else {
+            html = '<tr><td colspan="5">Нет слов</td></tr>';
+        }
+        document.querySelector('#wordsTable tbody').innerHTML = html;
+        document.getElementById('wordsModal').classList.add('show');
     }
 
     function closeModal() {
-      document.getElementById('wordsModal').classList.remove('show');
+        document.getElementById('wordsModal').classList.remove('show');
     }
 
     async function deleteUser(id) {
-      if (!confirm('Удалить пользователя и все его слова?')) return;
-      await api('/admin/api/users/'+id, 'DELETE');
-      loadUsers();
+        if (!confirm('Удалить пользователя и все его слова?')) return;
+        await api('/admin/api/users/'+id, 'DELETE');
+        loadUsers();
     }
 
     function logout() {
-      localStorage.removeItem('admin_token');
-      window.location.href = '/admin/login';
+        localStorage.removeItem('admin_token');
+        window.location.href = '/admin/login';
     }
 
     // Загрузка при старте
@@ -337,9 +410,9 @@ function getAdminHTML() {
 
     // Закрытие модалки по клику вне
     document.getElementById('wordsModal').onclick = (e) => {
-      if (e.target === document.getElementById('wordsModal')) closeModal();
+        if (e.target === document.getElementById('wordsModal')) closeModal();
     };
-  </script>
+</script>
 </body>
 </html>`;
 }
