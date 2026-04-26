@@ -1,6 +1,10 @@
 # 📡 API Documentation — Language Learning App  
 
-Базовый URL: `http://localhost:5000/api`
+Базовый URL: `http://localhost:5000/api`  
+Админка: `http://localhost:5000/admin`  
+  
+Email: student@test.com  
+Пароль: 123456
 
 ---
 
