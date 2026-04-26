@@ -4,8 +4,61 @@ import jwt from 'jsonwebtoken';
 import db from '../config/database.js';
 import { auth, JWT_SECRET } from '../middleware/auth.js';
 import { seedStarterWords } from '../seed.js';
+import { adminAuth } from '../middleware/auth.js';
 
 const router = Router();
+
+// Только админ может сделать другого пользователя админом
+router.put('/make-admin/:userId', auth, adminAuth, (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const user = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'Пользователь не найден' });
+        }
+
+        db.prepare('UPDATE users SET role = ? WHERE id = ?').run('admin', userId);
+        res.json({ message: 'Пользователь стал администратором' });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+// Снять админа
+router.put('/remove-admin/:userId', auth, adminAuth, (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        if (parseInt(userId) === req.userId) {
+            return res.status(400).json({ error: 'Нельзя снять админа с самого себя' });
+        }
+
+        db.prepare('UPDATE users SET role = ? WHERE id = ?').run('user', userId);
+        res.json({ message: 'Администратор снят' });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
+
+// Список пользователей (только для админа)
+router.get('/users', auth, adminAuth, (req, res) => {
+    try {
+        const users = db.prepare(`
+      SELECT u.id, u.username, u.email, u.role, u.created_at,
+             COUNT(w.id) as total_words,
+             SUM(CASE WHEN w.level >= 3 THEN 1 ELSE 0 END) as learned_words
+      FROM users u
+      LEFT JOIN words w ON u.id = w.user_id
+      GROUP BY u.id
+      ORDER BY u.created_at DESC
+    `).all();
+
+        res.json({ users });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка сервера' });
+    }
+});
 
 // POST /api/auth/register
 router.post('/register', (req, res) => {

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import authRoutes from './src/routes/auth.js';
 import wordRoutes from './src/routes/words.js';
+import adminRoutes from './src/routes/admin.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,15 +13,24 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Маршруты
+// API маршруты
 app.use('/api/auth', authRoutes);
 app.use('/api/words', wordRoutes);
 
-// Проверка
+// Админка
+app.use('/admin', adminRoutes);
+
+// Health check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 app.listen(PORT, () => {
-    console.log(`\n Сервер запущен на http://localhost:${PORT}\n`);
+    console.log(`
+╔═════════════════════════════════════════╗
+║  Сервер: http://localhost:${PORT}       ║
+║  Админка: http://localhost:${PORT}/admin║
+║  API: http://localhost:${PORT}/api      ║
+╚═════════════════════════════════════════╝
+  `);
 });
