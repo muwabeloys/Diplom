@@ -208,22 +208,12 @@ router.get('/', (req, res) => {
       window.location.href = '/admin/login';
     }
 
-    const catNames = { 
-      basics: '📝 Основы', 
-      food: '🍽️ Еда', 
-      travel: '✈️ Путешествия', 
-      work: '💼 Работа', 
-      hobbies: '🎨 Хобби' 
-    };
+    const catNames = { basics: '📝 Основы', food: '🍽️ Еда', travel: '✈️ Путешествия', work: '💼 Работа', hobbies: '🎨 Хобби' };
 
-    // API хелпер
     async function api(url, method = 'GET', body = null) {
       const opts = { 
         method, 
-        headers: { 
-          'Authorization': 'Bearer ' + token, 
-          'Content-Type': 'application/json' 
-        } 
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } 
       };
       if (body) opts.body = JSON.stringify(body);
       
@@ -238,7 +228,6 @@ router.get('/', (req, res) => {
       return res.json();
     }
 
-    // Загрузка дашборда
     async function loadDashboard() {
       const data = await api('/admin/api/stats');
       if (!data) return;
@@ -250,110 +239,70 @@ router.get('/', (req, res) => {
       const usersData = await api('/admin/api/users');
       if (!usersData) return;
       
-      // Рендер таблицы на дашборде
-      let dashboardHtml = '';
-      usersData.users.slice(0, 5).forEach(u => {
-        dashboardHtml += renderUserRow(u);
-      });
-      document.querySelector('#usersTable tbody').innerHTML = dashboardHtml || '<tr><td>Нет пользователей</td></tr>';
-      
-      // Рендер таблицы на странице пользователей
-      let allUsersHtml = '';
+      let html = '';
       usersData.users.forEach(u => {
-        allUsersHtml += renderUserRow(u);
+        html += '<tr>' +
+          '<td><strong>'+u.username+'</strong></td>' +
+          '<td>'+u.email+'</td>' +
+          '<td><span class="badge badge-'+(u.role==='admin'?'admin':'user')+'">'+u.role+'</span></td>' +
+          '<td>'+u.total_words+' / '+u.learned_words+'</td>' +
+          '<td>' +
+            '<button class="btn btn-info" onclick="viewWords('+u.id+')">📚</button> ' +
+            (u.role!=='admin' ? '<button class="btn btn-danger" onclick="deleteUser('+u.id+')">🗑</button>' : '') +
+          '</td>' +
+        '</tr>';
       });
-      document.querySelector('#allUsersTable tbody').innerHTML = allUsersHtml || '<tr><td>Нет пользователей</td></tr>';
+      document.querySelector('#usersTable tbody').innerHTML = html || '<tr><td>Нет данных</td></tr>';
+      document.querySelector('#allUsersTable tbody').innerHTML = html || '<tr><td>Нет данных</td></tr>';
     }
 
-    // Рендер строки пользователя
-    function renderUserRow(u) {
-      const deleteBtn = u.role !== 'admin' 
-        ? '<button class="btn btn-danger" onclick="deleteUser(' + u.id + ', \'' + u.username + '\')">🗑️ Удалить</button>' 
-        : '<span style="color:#999;font-size:12px;">Админ</span>';
-      
-      return '<tr>' +
-        '<td><strong>' + u.username + '</strong></td>' +
-        '<td>' + u.email + '</td>' +
-        '<td><span class="badge ' + (u.role === 'admin' ? 'badge-admin' : 'badge-user') + '">' + u.role + '</span></td>' +
-        '<td>' + u.total_words + ' / ' + u.learned_words + ' изучено</td>' +
-        '<td>' +
-          '<button class="btn btn-info" onclick="viewWords(' + u.id + ', \'' + u.username + '\')">📚 Слова</button> ' +
-          deleteBtn +
-        '</td>' +
-      '</tr>';
-    }
-
-    // Переключение вкладок
     function showTab(name) {
       document.getElementById('tab-dashboard').classList.add('hidden');
       document.getElementById('tab-users').classList.add('hidden');
       document.getElementById('nav-dashboard').classList.remove('active');
       document.getElementById('nav-users').classList.remove('active');
       
-      document.getElementById('tab-' + name).classList.remove('hidden');
-      document.getElementById('nav-' + name).classList.add('active');
+      document.getElementById('tab-'+name).classList.remove('hidden');
+      document.getElementById('nav-'+name).classList.add('active');
       document.getElementById('pageTitle').textContent = name === 'dashboard' ? 'Дашборд' : 'Пользователи';
+      
+      if (name === 'dashboard') loadDashboard();
+      if (name === 'users') loadDashboard();
     }
 
-    // Просмотр слов пользователя
-    async function viewWords(id, username) {
-      const data = await api('/admin/api/users/' + id + '/words');
+    async function viewWords(id) {
+      const data = await api('/admin/api/users/'+id+'/words');
       if (!data) return;
       
       let html = '';
-      if (data.words && data.words.length > 0) {
-        data.words.forEach(w => {
-          html += '<tr>' +
-            '<td><strong>' + w.word + '</strong></td>' +
-            '<td>' + w.translation + '</td>' +
-            '<td>' + (catNames[w.category] || w.category) + '</td>' +
-            '<td>' + '⭐'.repeat(Math.min(w.level, 5)) + '</td>' +
-            '<td>' + w.review_count + ' повт.</td>' +
-          '</tr>';
-        });
-      } else {
-        html = '<tr><td colspan="5">У пользователя нет слов</td></tr>';
-      }
-      
-      document.querySelector('#wordsTable tbody').innerHTML = html;
+      data.words.forEach(w => {
+        html += '<tr><td><strong>'+w.word+'</strong></td><td>'+w.translation+'</td><td>'+(catNames[w.category]||w.category)+'</td><td>'+'⭐'.repeat(Math.min(w.level,5))+'</td><td>'+w.review_count+' повт.</td></tr>';
+      });
+      document.querySelector('#wordsTable tbody').innerHTML = html || '<tr><td>Нет слов</td></tr>';
       document.getElementById('wordsModal').classList.add('show');
     }
 
-    // Закрытие модалки
     function closeModal() {
       document.getElementById('wordsModal').classList.remove('show');
     }
 
-    // Удаление пользователя
-    async function deleteUser(id, username) {
-      const confirmed = confirm('Вы уверены, что хотите удалить пользователя "' + username + '" и все его слова?');
-      
-      if (!confirmed) return;
-      
-      const result = await api('/admin/api/users/' + id, 'DELETE');
-      
-      if (result && result.message) {
-        alert(result.message);
-        loadDashboard(); // Перезагружаем список
-      } else if (result && result.error) {
-        alert('Ошибка: ' + result.error);
-      }
+    async function deleteUser(id) {
+      if (!confirm('Удалить пользователя?')) return;
+      await api('/admin/api/users/'+id, 'DELETE');
+      loadDashboard();
     }
 
-    // Выход
     function logout() {
       localStorage.removeItem('admin_token');
       window.location.href = '/admin/login';
     }
 
-    // Закрытие модалки по клику на фон
-    document.getElementById('wordsModal').addEventListener('click', function(e) {
+    document.getElementById('wordsModal').onclick = function(e) {
       if (e.target === this) closeModal();
-    });
+    };
 
-    // Загрузка при старте
     loadDashboard();
-</script>
+  </script>
 </body>
 </html>`);
 });
