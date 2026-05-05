@@ -13,13 +13,13 @@ router.get('/study', (req, res) => {
         const { language = 'en', limit = 10 } = req.query;
 
         const words = db.prepare(`
-      SELECT id, word, translation, example, category, level, review_count
-      FROM words 
-      WHERE user_id = ? 
+    SELECT id, word, translation, example, example_translation, category, level, review_count
+    FROM words 
+    WHERE user_id = ? 
         AND language = ? 
         AND next_review <= datetime('now')
-      ORDER BY level ASC, RANDOM()
-      LIMIT ?
+    ORDER BY level ASC, RANDOM()
+    LIMIT ?
     `).all(req.userId, language, parseInt(limit));
 
         const stats = db.prepare(`
@@ -99,7 +99,7 @@ router.put('/:id/review', (req, res) => {
 // POST /api/words - добавить новое слово
 router.post('/', (req, res) => {
     try {
-        const { language = 'en', word, translation, example = '', category = 'basics' } = req.body;
+        const { language = 'en', word, translation, example = '', example_translation = '', category = 'basics' } = req.body;
 
         if (!word || !translation) {
             return res.status(400).json({ error: 'Слово и перевод обязательны' });
@@ -115,10 +115,9 @@ router.post('/', (req, res) => {
         }
 
         db.prepare(`
-      INSERT INTO words (user_id, language, word, translation, example, category)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(req.userId, language, word.toLowerCase(), translation.toLowerCase(), example, category);
-
+    INSERT INTO words (user_id, language, word, translation, example, example_translation, category)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(req.userId, language, word.toLowerCase(), translation.toLowerCase(), example, exampleTranslation || '', category);
         res.status(201).json({ message: 'Слово успешно добавлено' });
 
     } catch (error) {

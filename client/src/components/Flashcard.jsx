@@ -9,8 +9,15 @@ export default function Flashcard({ word, showAnswer, onClick }) {
                 </div>
 
                 {showAnswer && word.example && (
-                    <div className="example-display">
-                        💬 {word.example}
+                    <div className="example-block">
+                        <div className="example-original">
+                            💬 {word.example}
+                        </div>
+                        {word.example_translation && (
+                            <div className="example-translation">
+                                🇷🇺 {word.example_translation}
+                            </div>
+                        )}
                     </div>
                 )}
 

@@ -36,6 +36,30 @@
     margin-top: 8px;
 }
 
+.example-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 15px;
+    background: rgba(102, 126, 234, 0.08);
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+}
+
+.example-original {
+    font-size: 1.1rem;
+    color: #333;
+    font-style: italic;
+}
+
+.example-translation {
+    font-size: 1rem;
+    color: #555;
+    padding-top: 5px;
+    border-top: 1px dashed #ddd;
+}
+
 .category-badge {
     display: inline-block;
     padding: 6px 16px;
