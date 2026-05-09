@@ -14,9 +14,6 @@ export default function StudyPage() {
     const [showAnswer, setShowAnswer] = useState(false);
     const [stats, setStats] = useState(null);
     const [showProfile, setShowProfile] = useState(false);
-    if (showProfile) {
-        return <ProfilePage onBack={() => setShowProfile(false)} />;
-    }
 
     useEffect(() => {
         loadWords();
@@ -50,13 +47,10 @@ export default function StudyPage() {
 
     const handleReview = async (quality) => {
         if (!currentWord) return;
-
         try {
             await api.reviewWord(currentWord.id, quality);
-
             const remaining = words.slice(1);
             setWords(remaining);
-
             if (remaining.length > 0) {
                 setCurrentWord(remaining[0]);
                 setShowAnswer(false);
@@ -73,6 +67,12 @@ export default function StudyPage() {
         setShowAnswer(!showAnswer);
     };
 
+    // Показываем профиль
+    if (showProfile) {
+        return <ProfilePage onBack={() => setShowProfile(false)} />;
+    }
+
+    // Основной экран
     return (
         <div className="study-page">
             <header className="study-header">
