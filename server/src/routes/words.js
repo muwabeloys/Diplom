@@ -23,13 +23,13 @@ router.get('/study', (req, res) => {
     `).all(req.userId, language, parseInt(limit));
 
         const stats = db.prepare(`
-      SELECT 
-        COUNT(*) as total,
-        SUM(CASE WHEN level >= 3 THEN 1 ELSE 0 END) as learned,
-        SUM(CASE WHEN next_review <= datetime('now') THEN 1 ELSE 0 END) as due
-      FROM words 
-      WHERE user_id = ? AND language = ?
-    `).get(req.userId, language);
+        SELECT 
+            COUNT(*) as total,
+            SUM(CASE WHEN level >= 3 THEN 1 ELSE 0 END) as learned,
+            SUM(CASE WHEN datetime(next_review) <= datetime('now', '+1 day') THEN 1 ELSE 0 END) as due
+        FROM words 
+        WHERE user_id = ? AND language = ?
+        `).get(req.userId, language);
 
         res.json({
             words,
