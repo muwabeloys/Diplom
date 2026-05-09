@@ -17,7 +17,7 @@ router.get('/study', (req, res) => {
     FROM words 
     WHERE user_id = ? 
         AND language = ? 
-        AND next_review <= datetime('now')
+        AND datetime(next_review) <= datetime('now', '+1 day')
     ORDER BY level ASC, RANDOM()
     LIMIT ?
     `).all(req.userId, language, parseInt(limit));
