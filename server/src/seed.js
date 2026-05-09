@@ -45,7 +45,7 @@ export const seedStarterWords = (userId) => {
 
     const insertAll = db.transaction(() => {
         for (const w of words) {
-            insert.run(userId, w.word, w.translation, w.example, w.category);
+            insert.run(userId, w.word, w.translation, w.example || '', w.example_translation || '', w.category);
         }
     });
 
