@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import Flashcard from '../components/Flashcard';
 import RatingButtons from '../components/RatingButtons';
 import StatsBar from '../components/StatsBar';
+import ProfilePage from './ProfilePage';
 import './StudyPage.css';
 
 export default function StudyPage() {
