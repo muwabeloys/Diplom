@@ -40,7 +40,7 @@ export const seedStarterWords = (userId) => {
 
     const insert = db.prepare(`
     INSERT INTO words (user_id, language, word, translation, example, category)
-    VALUES (?, 'en', ?, ?, ?, ?)
+    VALUES (?, 'en', ?, ?, ?, ?, datetime('now', '-1 second'))
   `);
 
     const insertAll = db.transaction(() => {
