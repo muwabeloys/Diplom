@@ -32,8 +32,8 @@ Backend: http://localhost:5000
 
 {  
   "username": "student",  
-  "email": "student@test.com",  
-  "password": "123456"  
+  "email": "student@test.ru",  
+  "password": "student"  
 }  
 
 ### Вход: POST /api/auth/login 

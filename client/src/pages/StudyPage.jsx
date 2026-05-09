@@ -12,6 +12,10 @@ export default function StudyPage() {
     const [currentWord, setCurrentWord] = useState(null);
     const [showAnswer, setShowAnswer] = useState(false);
     const [stats, setStats] = useState(null);
+    const [showProfile, setShowProfile] = useState(false);
+    if (showProfile) {
+        return <ProfilePage onBack={() => setShowProfile(false)} />;
+    }
 
     useEffect(() => {
         loadWords();
@@ -73,7 +77,10 @@ export default function StudyPage() {
             <header className="study-header">
                 <div className="header-top">
                     <h1>Привет, {user?.username}! 👋</h1>
-                    <button onClick={logout} className="btn-logout">Выйти</button>
+                    <div className="header-buttons">
+                        <button onClick={() => setShowProfile(true)} className="btn-profile">👤 Профиль</button>
+                        <button onClick={logout} className="btn-logout">Выйти</button>
+                    </div>
                 </div>
                 {stats && <StatsBar stats={stats} />}
             </header>

@@ -149,32 +149,79 @@ router.post('/login', (req, res) => {
 });
 
 // GET /api/auth/profile
+// server/src/routes/auth.js — обновлённый GET /profile
+
 router.get('/profile', auth, (req, res) => {
     try {
+        const userId = req.userId;
+
+        // Данные пользователя
         const user = db.prepare(
             'SELECT id, username, email, daily_goal, created_at FROM users WHERE id = ?'
-        ).get(req.userId);
+        ).get(userId);
 
         if (!user) {
             return res.status(404).json({ error: 'Пользователь не найден' });
         }
 
-        // Получаем статистику пользователя
+        // Общая статистика
         const stats = db.prepare(`
       SELECT 
         COUNT(*) as total_words,
         SUM(CASE WHEN level >= 3 THEN 1 ELSE 0 END) as learned_words,
         SUM(CASE WHEN next_review <= datetime('now') THEN 1 ELSE 0 END) as words_to_review
       FROM words WHERE user_id = ?
-    `).get(req.userId);
+    `).get(userId);
+
+        // По уровням
+        const byLevel = db.prepare(`
+      SELECT level, COUNT(*) as count 
+      FROM words WHERE user_id = ? 
+      GROUP BY level ORDER BY level
+    `).all(userId);
+
+        // По категориям
+        const byCategory = db.prepare(`
+      SELECT category, 
+             COUNT(*) as total,
+             SUM(CASE WHEN level >= 3 THEN 1 ELSE 0 END) as learned
+      FROM words WHERE user_id = ? 
+      GROUP BY category
+    `).all(userId);
+
+        // Сегодняшняя активность
+        const todayActivity = db.prepare(`
+      SELECT 
+        COUNT(*) as reviewed_today,
+        SUM(CASE WHEN level >= 3 THEN 1 ELSE 0 END) as correct_today
+      FROM words 
+      WHERE user_id = ? 
+        AND date(next_review) > date('now')
+    `).get(userId);
 
         res.json({
             user: {
-                ...user,
-                stats: stats || { total_words: 0, learned_words: 0, words_to_review: 0 }
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                daily_goal: user.daily_goal,
+                created_at: user.created_at,
+                stats: {
+                    total_words: stats.total_words || 0,
+                    learned_words: stats.learned_words || 0,
+                    words_to_review: stats.words_to_review || 0,
+                    completion_percent: stats.total_words > 0
+                        ? Math.round((stats.learned_words / stats.total_words) * 100)
+                        : 0,
+                    by_level: byLevel || [],
+                    by_category: byCategory || [],
+                    today_activity: {
+                        reviewed: todayActivity.reviewed_today || 0,
+                        correct: todayActivity.correct_today || 0
+                    }
+                }
             }
         });
-
     } catch (error) {
         console.error('Profile error:', error);
         res.status(500).json({ error: 'Ошибка получения профиля' });
