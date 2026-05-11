@@ -49,6 +49,14 @@ class ApiClient {
 
     getCategories = (language = 'en') =>
         this.request(`/words/categories?language=${language}`);
+
+    getGrammarCategories = (lang = 'en') => this.request(`/grammar/categories?language=${lang}`);
+
+    getGrammarRules = (params = {}) => {
+        const query = new URLSearchParams(params).toString();
+        return this.request(`/grammar?${query}`);
+    };
+    getGrammarRule = (id) => this.request(`/grammar/${id}`);
 }
 
 export const api = new ApiClient();

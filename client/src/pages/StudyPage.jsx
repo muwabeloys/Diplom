@@ -5,6 +5,7 @@ import Flashcard from '../components/Flashcard';
 import RatingButtons from '../components/RatingButtons';
 import StatsBar from '../components/StatsBar';
 import ProfilePage from './ProfilePage';
+import GrammarPage from './GrammarPage';
 import './StudyPage.css';
 
 export default function StudyPage() {
@@ -14,6 +15,7 @@ export default function StudyPage() {
     const [showAnswer, setShowAnswer] = useState(false);
     const [stats, setStats] = useState(null);
     const [showProfile, setShowProfile] = useState(false);
+    const [showGrammar, setShowGrammar] = useState(false);
 
     useEffect(() => {
         loadWords();
@@ -72,6 +74,10 @@ export default function StudyPage() {
         return <ProfilePage onBack={() => setShowProfile(false)} />;
     }
 
+    if (showGrammar) {
+        return <GrammarPage onBack={() => setShowGrammar(false)} />;
+    }
+
     // Основной экран
     return (
         <div className="study-page">
@@ -79,6 +85,7 @@ export default function StudyPage() {
                 <div className="header-top">
                     <h1>Привет, {user?.username}! 👋</h1>
                     <div className="header-buttons">
+                        <button onClick={() => setShowGrammar(true)} className="btn-profile">📖 Грамматика</button>
                         <button onClick={() => setShowProfile(true)} className="btn-profile">👤 Профиль</button>
                         <button onClick={logout} className="btn-logout">Выйти</button>
                     </div>

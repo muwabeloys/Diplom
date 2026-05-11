@@ -3,6 +3,8 @@ import cors from 'cors';
 import authRoutes from './src/routes/auth.js';
 import wordRoutes from './src/routes/words.js';
 import adminRoutes from './src/routes/admin.js';
+import grammarRoutes from './src/routes/grammar.js';
+import { seedGrammarRules } from './src/grammar-seed.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +18,7 @@ app.use(express.json());
 // API маршруты
 app.use('/api/auth', authRoutes);
 app.use('/api/words', wordRoutes);
+app.use('/api/grammar', grammarRoutes);
 
 // Админка
 app.use('/admin', adminRoutes);
@@ -25,12 +28,16 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+
+
 app.listen(PORT, () => {
     console.log(`
-╔═════════════════════════════════════════╗
-║  Сервер: http://localhost:${PORT}       ║
-║  Админка: http://localhost:${PORT}/admin║
-║  API: http://localhost:${PORT}/api      ║
-╚═════════════════════════════════════════╝
+
+  Сервер: http://localhost:${PORT}       
+  Админка: http://localhost:${PORT}/admin
+  API: http://localhost:${PORT}/api      
+
   `);
+    // Заполняем грамматику после запуска
+    seedGrammarRules();
 });

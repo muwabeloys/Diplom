@@ -1,0 +1,171 @@
+.grammar-page {
+    min-height: 100vh;
+    background: #f5f5f5;
+}
+
+.grammar-header {
+    background: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.grammar-content {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.grammar-filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.grammar-filters button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: white;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.grammar-filters button.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.rule-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.rule-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.rule-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.rule-icon {
+    font-size: 24px;
+}
+
+.rule-level {
+    font-size: 12px;
+    padding: 3px 10px;
+    background: #f0f0f0;
+    border-radius: 12px;
+}
+
+.rule-card h3 {
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.rule-card p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Detail */
+.rule-detail {
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rule-full-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    margin-top: 15px;
+}
+
+.rule-badges {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.badge {
+    padding: 5px 12px;
+    background: #f0f0f0;
+    border-radius: 15px;
+    font-size: 13px;
+}
+
+.rule-full-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.rule-description {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+.rule-examples h3 {
+    margin-bottom: 15px;
+}
+
+.example-item {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid #667eea;
+}
+
+.example-en {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.example-ru {
+    color: #666;
+}
+
+.btn-back {
+    padding: 8px 16px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
