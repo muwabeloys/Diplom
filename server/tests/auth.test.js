@@ -204,9 +204,10 @@ describe('Auth API', () => {
 
 afterAll(() => {
     db.close();
-    if (fs.existsSync(TEST_DB)) {
-        fs.unlinkSync(TEST_DB);
-        console.log('\n🧹 Тестовая БД удалена');
-    }
-    console.log('ТЕСТЫ АВТОРИЗАЦИИ ЗАВЕРШЕНЫ\n');
+    // Удаляем все связанные файлы
+    const files = [TEST_DB, TEST_DB + '-shm', TEST_DB + '-wal'];
+    files.forEach(f => {
+        try { if (fs.existsSync(f)) fs.unlinkSync(f); } catch (e) { }
+    });
+    console.log('🧹 Тестовая БД и WAL-файлы удалены');
 });
