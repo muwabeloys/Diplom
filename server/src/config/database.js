@@ -5,13 +5,15 @@ import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Создаем папку data если её нет
-const dataDir = path.join(__dirname, '..', '..', 'data');
+// Используем тестовую БД если указана
+const dbPath = process.env.DATABASE_PATH || path.join(__dirname, '..', '..', 'data', 'app.db');
+
+const dataDir = path.dirname(dbPath);
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-const db = new Database(path.join(dataDir, 'app.db'));
+const db = new Database(dbPath);
 
 // Настройки производительности
 db.pragma('journal_mode = WAL');
@@ -37,6 +39,7 @@ db.exec(`
     word TEXT NOT NULL,
     translation TEXT NOT NULL,
     example TEXT DEFAULT '',
+    example_translation TEXT DEFAULT '',
     category TEXT DEFAULT 'basics',
     level INTEGER DEFAULT 0,
     next_review DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -45,19 +48,21 @@ db.exec(`
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
   );
 
-  CREATE INDEX IF NOT EXISTS idx_words_user_lang 
-    ON words(user_id, language, next_review);
   CREATE INDEX IF NOT EXISTS idx_words_review 
     ON words(user_id, language, next_review);
-  CREATE INDEX IF NOT EXISTS idx_words_category 
-    ON words(user_id, category);
 `);
 
-// Миграция для существующих баз — добавляем поле role если его нет
+// Миграция для существующих баз
 try {
   db.exec(`ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'`);
 } catch (e) {
-  // Поле уже существует — игнорируем
+  // Поле уже существует
+}
+
+try {
+  db.exec(`ALTER TABLE words ADD COLUMN example_translation TEXT DEFAULT ''`);
+} catch (e) {
+  // Поле уже существует
 }
 
 export default db;
