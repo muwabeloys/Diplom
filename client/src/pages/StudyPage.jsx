@@ -49,10 +49,29 @@ export default function StudyPage() {
 
     const handleReview = async (quality) => {
         if (!currentWord) return;
+
         try {
             await api.reviewWord(currentWord.id, quality);
+
             const remaining = words.slice(1);
             setWords(remaining);
+
+            // Обновляем статистику после оценки
+            setStats(prevStats => {
+                if (!prevStats) return prevStats;
+                const newStats = { ...prevStats };
+
+                // Уменьшаем "На сегодня" на 1
+                if (newStats.due > 0) newStats.due -= 1;
+
+                // Если оценка хорошая (4-5) — увеличиваем "Изучено"
+                if (quality >= 4) {
+                    newStats.learned += 1;
+                }
+
+                return newStats;
+            });
+
             if (remaining.length > 0) {
                 setCurrentWord(remaining[0]);
                 setShowAnswer(false);
