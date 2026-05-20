@@ -15,7 +15,7 @@ export default function Flashcard({ word, showAnswer, onClick }) {
                         </div>
                         {word.example_translation && (
                             <div className="example-translation">
-                                🇷🇺 {word.example_translation}
+                                RU: {word.example_translation}
                             </div>
                         )}
                     </div>
