@@ -4,89 +4,29 @@
 }
 
 .study-header {
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto 20px;
-    background: white;
+    background: #1a1a2e;
+    border: 1px solid #2a2a4a;
     border-radius: 20px;
     padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.study-main {
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 .header-top {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     margin-bottom: 16px;
 }
 
 .header-top h1 {
+    color: #e0e0e0;
     font-size: 1.5rem;
-}
-
-.btn-logout {
-    padding: 8px 16px;
-    background: #f0f0f0;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.btn-logout:hover {
-    background: #e0e0e0;
-}
-
-.study-main {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.study-area {
-    text-align: center;
-}
-
-.complete-card {
-    background: white;
-    border-radius: 24px;
-    padding: 60px 30px;
-    text-align: center;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-}
-
-.complete-icon {
-    font-size: 4rem;
-    margin-bottom: 16px;
-}
-
-.complete-card h2 {
-    font-size: 2rem;
-    margin-bottom: 8px;
-}
-
-.complete-card p {
-    color: #666;
-    margin-bottom: 8px;
-}
-
-.complete-card .sub-text {
-    font-size: 14px;
-    color: #999;
-    margin-bottom: 24px;
-}
-
-.btn-refresh {
-    padding: 14px 28px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-.btn-refresh:hover {
-    transform: translateY(-2px);
 }
 
 .header-buttons {
@@ -94,12 +34,58 @@
     gap: 8px;
 }
 
+.btn-logout {
+    padding: 8px 16px;
+    background: #2a2a4a;
+    color: #aaa;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.btn-logout:hover {
+    background: #3a3a5a;
+    color: #e0e0e0;
+}
+
 .btn-profile {
     padding: 8px 16px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: #7c8aff;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
+    white-space: nowrap;
+}
+
+.btn-profile:hover {
+    background: #6670f0;
+}
+
+.btn-refresh {
+    background: #7c8aff;
+    color: white;
+    border: none;
+}
+
+.complete-card {
+    background: #1a1a2e;
+    border: 1px solid #2a2a4a;
+    color: #e0e0e0;
+}
+
+.complete-card p {
+    color: #888;
+}
+
+.flashcard {
+    max-width: 100%;
+    margin: 0;
+}
+
+.rating-buttons {
+    max-width: 100%;
 }

@@ -3,10 +3,9 @@
 }
 
 .rating-label {
-    color: white;
+    color: #aaa;
     margin-bottom: 12px;
     font-size: 16px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .rating-grid {
@@ -30,11 +29,7 @@
 
 .rate-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-.rate-btn:active {
-    transform: translateY(0);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .rate-emoji {
@@ -52,15 +47,15 @@
 
 .rate-btn.hard {
     background: #ffa502;
-    color: white;
+    color: #1a1a2e;
 }
 
 .rate-btn.good {
-    background: #2ed573;
+    background: #7c8aff;
     color: white;
 }
 
 .rate-btn.easy {
-    background: #3742fa;
-    color: white;
+    background: #2ed573;
+    color: #1a1a2e;
 }
