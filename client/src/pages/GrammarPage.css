@@ -1,18 +1,24 @@
 .grammar-page {
     min-height: 100vh;
-    background: #f5f5f5;
+    background: #0f0f1a;
 }
 
 .grammar-header {
-    background: white;
-    padding: 20px;
+    background: #1a1a2e;
+    padding: 20px 30px;
     display: flex;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     position: sticky;
     top: 0;
     z-index: 10;
+    border-bottom: 1px solid #2a2a4a;
+}
+
+.grammar-header h1 {
+    font-size: 1.5rem;
+    color: #e0e0e0;
 }
 
 .grammar-content {
@@ -21,6 +27,7 @@
     padding: 0 20px;
 }
 
+/* Фильтры */
 .grammar-filters {
     display: flex;
     gap: 10px;
@@ -30,19 +37,27 @@
 
 .grammar-filters button {
     padding: 10px 18px;
-    border: none;
+    border: 1px solid #2a2a4a;
     border-radius: 10px;
     cursor: pointer;
-    background: white;
+    background: #1a1a2e;
+    color: #aaa;
     font-size: 14px;
     transition: all 0.3s;
 }
 
-.grammar-filters button.active {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
+.grammar-filters button:hover {
+    background: #2a2a4a;
+    color: #e0e0e0;
 }
 
+.grammar-filters button.active {
+    background: #7c8aff;
+    color: white;
+    border-color: #7c8aff;
+}
+
+/* Сетка правил */
 .rules-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -50,21 +65,24 @@
 }
 
 .rule-card {
-    background: white;
+    background: #1a1a2e;
     padding: 20px;
     border-radius: 16px;
     cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid #2a2a4a;
 }
 
 .rule-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(124, 138, 255, 0.1);
+    border-color: #7c8aff;
 }
 
 .rule-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
 }
 
@@ -75,23 +93,26 @@
 .rule-level {
     font-size: 12px;
     padding: 3px 10px;
-    background: #f0f0f0;
+    background: #2a2a4a;
     border-radius: 12px;
+    color: #aaa;
 }
 
 .rule-card h3 {
     margin-bottom: 8px;
-    color: #333;
+    color: #e0e0e0;
+    font-size: 1.1rem;
 }
 
 .rule-card p {
-    color: #666;
+    color: #888;
     font-size: 14px;
+    line-height: 1.4;
 }
 
-/* Detail */
+/* Детальная страница правила */
 .rule-detail {
-    animation: fadeIn 0.3s;
+    animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
@@ -107,10 +128,11 @@
 }
 
 .rule-full-card {
-    background: white;
+    background: #1a1a2e;
     padding: 30px;
     border-radius: 16px;
     margin-top: 15px;
+    border: 1px solid #2a2a4a;
 }
 
 .rule-badges {
@@ -121,19 +143,20 @@
 
 .badge {
     padding: 5px 12px;
-    background: #f0f0f0;
+    background: #2a2a4a;
     border-radius: 15px;
     font-size: 13px;
+    color: #aaa;
 }
 
 .rule-full-card h2 {
     font-size: 1.8rem;
     margin-bottom: 15px;
-    color: #333;
+    color: #e0e0e0;
 }
 
 .rule-description {
-    color: #555;
+    color: #aaa;
     line-height: 1.6;
     margin-bottom: 25px;
     font-size: 16px;
@@ -141,31 +164,79 @@
 
 .rule-examples h3 {
     margin-bottom: 15px;
+    color: #e0e0e0;
 }
 
 .example-item {
     padding: 15px;
-    background: #f8f9fa;
+    background: #0f0f1a;
     border-radius: 10px;
     margin-bottom: 10px;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #7c8aff;
 }
 
 .example-en {
     font-weight: bold;
-    color: #333;
+    color: #e0e0e0;
     margin-bottom: 5px;
 }
 
 .example-ru {
-    color: #666;
+    color: #888;
 }
 
+/* Кнопка назад */
 .btn-back {
     padding: 8px 16px;
-    background: #f0f0f0;
+    background: #2a2a4a;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    color: #aaa;
+    transition: all 0.3s;
+}
+
+.btn-back:hover {
+    background: #3a3a5a;
+    color: #e0e0e0;
+}
+
+/* Загрузка и ошибки */
+.loading-text {
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #888;
+}
+
+.error-text {
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #ff6b6b;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .rules-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .grammar-content {
+        padding: 0 10px;
+    }
+
+    .grammar-header {
+        padding: 15px;
+    }
+
+    .grammar-filters {
+        gap: 5px;
+    }
+
+    .grammar-filters button {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
 }
