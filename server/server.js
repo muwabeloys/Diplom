@@ -5,9 +5,21 @@ import wordRoutes from './src/routes/words.js';
 import adminRoutes from './src/routes/admin.js';
 import grammarRoutes from './src/routes/grammar.js';
 import { seedGrammarRules } from './src/grammar-seed.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// В продакшене раздаём статику клиента
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
+    });
+}
 
 app.use(cors({
     origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
