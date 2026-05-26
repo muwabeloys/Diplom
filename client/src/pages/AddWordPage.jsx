@@ -13,9 +13,13 @@ const categories = [
 // Функция перевода
 async function translateText(text, from, to) {
     try {
-        const langpair = `${from}|${to}`;
+        // Авто-определение: если текст на русском → переводим на английский и наоборот
+        const isRussian = /[а-яё]/i.test(text);
+        const actualFrom = isRussian ? 'ru' : 'en';
+        const actualTo = isRussian ? 'en' : 'ru';
+
         const res = await fetch(
-            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langpair}`
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${actualFrom}|${actualTo}`
         );
         const data = await res.json();
         if (data.responseStatus === 200) {
@@ -44,15 +48,8 @@ export default function AddWordPage({ onBack }) {
     const handleTranslateWord = async () => {
         if (!form.word) return;
         setTranslating(prev => ({ ...prev, word: true }));
-
-        const isRussian = /[а-яё]/i.test(form.word);
-        const from = isRussian ? 'ru' : 'en';
-        const to = isRussian ? 'en' : 'ru';
-
-        const result = await translateText(form.word, from, to);
-        if (result) {
-            setForm(prev => ({ ...prev, translation: result }));
-        }
+        const result = await translateText(form.word);
+        if (result) setForm(prev => ({ ...prev, translation: result }));
         setTranslating(prev => ({ ...prev, word: false }));
     };
 
@@ -60,15 +57,8 @@ export default function AddWordPage({ onBack }) {
     const handleTranslateExample = async () => {
         if (!form.example) return;
         setTranslating(prev => ({ ...prev, example: true }));
-
-        const isRussian = /[а-яё]/i.test(form.example);
-        const from = isRussian ? 'ru' : 'en';
-        const to = isRussian ? 'en' : 'ru';
-
-        const result = await translateText(form.example, from, to);
-        if (result) {
-            setForm(prev => ({ ...prev, example_translation: result }));
-        }
+        const result = await translateText(form.example);
+        if (result) setForm(prev => ({ ...prev, example_translation: result }));
         setTranslating(prev => ({ ...prev, example: false }));
     };
 
