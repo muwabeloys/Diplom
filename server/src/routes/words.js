@@ -117,7 +117,7 @@ router.post('/', (req, res) => {
         db.prepare(`
     INSERT INTO words (user_id, language, word, translation, example, example_translation, category)
     VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(req.userId, language, word.toLowerCase(), translation.toLowerCase(), example, exampleTranslation || '', category);
+    `).run(req.userId, language, word.toLowerCase(), translation.toLowerCase(), example, example_translation || '', category);
         res.status(201).json({ message: 'Слово успешно добавлено' });
 
     } catch (error) {

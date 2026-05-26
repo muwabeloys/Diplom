@@ -6,6 +6,7 @@ import RatingButtons from '../components/RatingButtons';
 import StatsBar from '../components/StatsBar';
 import ProfilePage from './ProfilePage';
 import GrammarPage from './GrammarPage';
+import AddWordPage from './AddWordPage';
 import './StudyPage.css';
 
 export default function StudyPage() {
@@ -16,6 +17,7 @@ export default function StudyPage() {
     const [stats, setStats] = useState(null);
     const [showProfile, setShowProfile] = useState(false);
     const [showGrammar, setShowGrammar] = useState(false);
+    const [showAddWord, setShowAddWord] = useState(false);
 
     useEffect(() => {
         loadWords();
@@ -35,7 +37,8 @@ export default function StudyPage() {
         try {
             const data = await api.getWordsForStudy('en', 10);
             setWords(data.words);
-            setStats(data.stats);
+            // Обновляем stats только если их нет (первый раз)
+            setStats(prevStats => prevStats || data.stats);
             if (data.words.length > 0) {
                 setCurrentWord(data.words[0]);
                 setShowAnswer(false);
@@ -54,30 +57,33 @@ export default function StudyPage() {
             await api.reviewWord(currentWord.id, quality);
 
             const remaining = words.slice(1);
-            setWords(remaining);
 
-            // Обновляем статистику после оценки
+            // Обновляем статистику
             setStats(prevStats => {
                 if (!prevStats) return prevStats;
                 const newStats = { ...prevStats };
-
-                // Уменьшаем "На сегодня" на 1
                 if (newStats.due > 0) newStats.due -= 1;
-
-                // Если оценка хорошая (4-5) — увеличиваем "Изучено"
-                if (quality >= 4) {
-                    newStats.learned += 1;
-                }
-
+                if (quality >= 4) newStats.learned += 1;
                 return newStats;
             });
 
-            if (remaining.length > 0) {
+            // Если это было последнее слово в текущей порции
+            if (remaining.length === 0) {
+                // Сразу грузим новые, не показывая сообщение
+                const data = await api.getWordsForStudy('en', 10);
+                if (data.words.length > 0) {
+                    setWords(data.words);
+                    setCurrentWord(data.words[0]);
+                    setShowAnswer(false);
+                } else {
+                    // Только если слов реально нет
+                    setWords([]);
+                    setCurrentWord(null);
+                }
+            } else {
+                setWords(remaining);
                 setCurrentWord(remaining[0]);
                 setShowAnswer(false);
-            } else {
-                setCurrentWord(null);
-                setTimeout(loadWords, 1000);
             }
         } catch (err) {
             console.error('Review error:', err);
@@ -88,7 +94,6 @@ export default function StudyPage() {
         setShowAnswer(!showAnswer);
     };
 
-    // Показываем профиль
     if (showProfile) {
         return <ProfilePage onBack={() => setShowProfile(false)} />;
     }
@@ -97,13 +102,20 @@ export default function StudyPage() {
         return <GrammarPage onBack={() => setShowGrammar(false)} />;
     }
 
-    // Основной экран
+    if (showAddWord) {
+        return <AddWordPage onBack={() => {
+            setShowAddWord(false);
+            loadWords(); // Обновляем список слов после добавления
+        }} />;
+    }
+
     return (
         <div className="study-page">
             <header className="study-header">
                 <div className="header-top">
                     <h1>Привет, {user?.username}! 👋</h1>
                     <div className="header-buttons">
+                        <button onClick={() => setShowAddWord(true)} className="btn-profile">➕ Слово</button>
                         <button onClick={() => setShowGrammar(true)} className="btn-profile">📖 Грамматика</button>
                         <button onClick={() => setShowProfile(true)} className="btn-profile">👤 Профиль</button>
                         <button onClick={logout} className="btn-logout">Выйти</button>
