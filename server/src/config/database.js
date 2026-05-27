@@ -42,7 +42,7 @@ db.exec(`
     example_translation TEXT DEFAULT '',
     category TEXT DEFAULT 'basics',
     level INTEGER DEFAULT 0,
-    next_review DATETIME DEFAULT CURRENT_TIMESTAMP,
+    next_review DATETIME DEFAULT (date('now')),
     review_count INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

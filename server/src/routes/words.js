@@ -78,7 +78,7 @@ router.put('/:id/review', (req, res) => {
         db.prepare(`
       UPDATE words 
       SET level = ?, 
-          next_review = datetime('now', '+' || ? || ' days'),
+          next_review = date('now', '+' || ? || ' days'),
           review_count = review_count + 1
       WHERE id = ? AND user_id = ?
     `).run(newLevel, daysUntilReview, id, req.userId);
