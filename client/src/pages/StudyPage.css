@@ -150,3 +150,42 @@
     font-size: 12px;
     white-space: nowrap;
 }
+
+.words-settings {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.settings-label {
+    color: #888;
+    font-size: 13px;
+}
+
+.settings-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-count {
+    padding: 5px 12px;
+    background: #2a2a4a;
+    color: #aaa;
+    border: 1px solid #3a3a5a;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.btn-count:hover {
+    background: #3a3a5a;
+    color: #e0e0e0;
+}
+
+.btn-count.active {
+    background: #7c8aff;
+    color: white;
+    border-color: #7c8aff;
+}

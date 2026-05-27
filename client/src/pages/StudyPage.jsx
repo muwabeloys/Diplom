@@ -8,6 +8,7 @@ import ProfilePage from './ProfilePage';
 import GrammarPage from './GrammarPage';
 import AddWordPage from './AddWordPage';
 import './StudyPage.css';
+import AboutPage from './AboutPage';
 
 export default function StudyPage() {
     const { user, logout, setUser } = useAuth();
@@ -18,11 +19,34 @@ export default function StudyPage() {
     const [showProfile, setShowProfile] = useState(false);
     const [showGrammar, setShowGrammar] = useState(false);
     const [showAddWord, setShowAddWord] = useState(false);
+    const [wordsPerDay, setWordsPerDay] = useState(10);
+    const [showAbout, setShowAbout] = useState(false);
+
 
     useEffect(() => {
+        loadInitialStats();
         loadWords();
         loadProfile();
     }, []);
+
+    const loadInitialStats = async () => {
+        try {
+            // Проверяем сохранённую статистику за сегодня
+            const saved = localStorage.getItem('studyStats');
+            if (saved) {
+                const { stats: savedStats, date } = JSON.parse(saved);
+                if (date === new Date().toDateString()) {
+                    setStats(savedStats);
+                    return;
+                }
+            }
+            // Иначе грузим из API
+            const data = await api.getWordsForStudy('en', wordsPerDay);
+            setStats(data.stats);
+        } catch (err) {
+            console.error('Stats error:', err);
+        }
+    };
 
     const loadProfile = async () => {
         try {
@@ -35,10 +59,9 @@ export default function StudyPage() {
 
     const loadWords = async () => {
         try {
-            const data = await api.getWordsForStudy('en', 10);
+            const data = await api.getWordsForStudy('en', wordsPerDay);
             setWords(data.words);
-            // Обновляем stats только если их нет (первый раз)
-            setStats(prevStats => prevStats || data.stats);
+            // НЕ перезаписываем stats если они уже есть (после обновления)
             if (data.words.length > 0) {
                 setCurrentWord(data.words[0]);
                 setShowAnswer(false);
@@ -58,32 +81,26 @@ export default function StudyPage() {
 
             const remaining = words.slice(1);
 
-            // Обновляем статистику
             setStats(prevStats => {
                 if (!prevStats) return prevStats;
                 const newStats = { ...prevStats };
                 if (newStats.due > 0) newStats.due -= 1;
                 if (quality >= 4) newStats.learned += 1;
+                localStorage.setItem('studyStats', JSON.stringify({
+                    stats: newStats,
+                    date: new Date().toDateString()
+                }));
                 return newStats;
             });
 
-            // Если это было последнее слово в текущей порции
-            if (remaining.length === 0) {
-                // Сразу грузим новые, не показывая сообщение
-                const data = await api.getWordsForStudy('en', 10);
-                if (data.words.length > 0) {
-                    setWords(data.words);
-                    setCurrentWord(data.words[0]);
-                    setShowAnswer(false);
-                } else {
-                    // Только если слов реально нет
-                    setWords([]);
-                    setCurrentWord(null);
-                }
-            } else {
+            if (remaining.length > 0) {
                 setWords(remaining);
                 setCurrentWord(remaining[0]);
                 setShowAnswer(false);
+            } else {
+                // Порция закончилась — показываем сообщение
+                setWords([]);
+                setCurrentWord(null);
             }
         } catch (err) {
             console.error('Review error:', err);
@@ -93,6 +110,10 @@ export default function StudyPage() {
     const handleCardClick = () => {
         setShowAnswer(!showAnswer);
     };
+
+    if (showAbout) {
+        return <AboutPage onBack={() => setShowAbout(false)} />;
+    }
 
     if (showProfile) {
         return <ProfilePage onBack={() => setShowProfile(false)} />;
@@ -114,14 +135,37 @@ export default function StudyPage() {
             <header className="study-header">
                 <div className="header-top">
                     <h1>Привет, {user?.username}! 👋</h1>
+                    <button onClick={logout} className="btn-logout">Выйти</button>
                     <div className="header-buttons">
                         <button onClick={() => setShowAddWord(true)} className="btn-profile">➕ Слово</button>
                         <button onClick={() => setShowGrammar(true)} className="btn-profile">📖 Грамматика</button>
                         <button onClick={() => setShowProfile(true)} className="btn-profile">👤 Профиль</button>
-                        <button onClick={logout} className="btn-logout">Выйти</button>
+                        <button onClick={() => setShowAbout(true)} className="btn-profile">ℹ️ О сайте</button>
+
+
                     </div>
                 </div>
                 {stats && <StatsBar stats={stats} />}
+
+                {stats && (
+                    <div className="words-settings">
+                        <span className="settings-label">Слов за раз:</span>
+                        <div className="settings-buttons">
+                            {[5, 10, 15, 20].map(num => (
+                                <button
+                                    key={num}
+                                    className={`btn-count ${wordsPerDay === num ? 'active' : ''}`}
+                                    onClick={() => {
+                                        setWordsPerDay(num);
+                                        loadWords();
+                                    }}
+                                >
+                                    {num}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </header>
 
             <main className="study-main">
