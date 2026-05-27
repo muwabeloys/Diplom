@@ -189,3 +189,59 @@
     color: white;
     border-color: #7c8aff;
 }
+
+@media (max-width: 480px) {
+    .study-page {
+        padding: 10px;
+    }
+
+    .study-header {
+        padding: 15px;
+        border-radius: 16px;
+    }
+
+    .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .header-top h1 {
+        font-size: 1.1rem;
+    }
+
+    .header-buttons {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 5px;
+    }
+
+    .btn-profile,
+    .btn-logout {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+
+    .flashcard {
+        padding: 30px 20px;
+        border-radius: 16px;
+    }
+
+    .word-display {
+        font-size: 1.8rem;
+    }
+
+    .rating-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .rate-btn {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+
+    .complete-card {
+        padding: 40px 20px;
+    }
+}

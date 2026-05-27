@@ -81,24 +81,31 @@ export default function StudyPage() {
 
             const remaining = words.slice(1);
 
-            setStats(prevStats => {
-                if (!prevStats) return prevStats;
-                const newStats = { ...prevStats };
-                if (newStats.due > 0) newStats.due -= 1;
-                if (quality >= 4) newStats.learned += 1;
+            // Получаем актуальную статистику из API
+            const profileData = await api.getProfile();
+            if (profileData.user?.stats) {
+                const apiStats = profileData.user.stats;
+                setStats({
+                    total: apiStats.total_words || 0,
+                    learned: apiStats.learned_words || 0,
+                    due: Math.max(0, (apiStats.total_words - apiStats.learned_words)),
+                });
+
                 localStorage.setItem('studyStats', JSON.stringify({
-                    stats: newStats,
+                    stats: {
+                        total: apiStats.total_words || 0,
+                        learned: apiStats.learned_words || 0,
+                        due: Math.max(0, (apiStats.total_words - apiStats.learned_words)),
+                    },
                     date: new Date().toDateString()
                 }));
-                return newStats;
-            });
+            }
 
             if (remaining.length > 0) {
                 setWords(remaining);
                 setCurrentWord(remaining[0]);
                 setShowAnswer(false);
             } else {
-                // Порция закончилась — показываем сообщение
                 setWords([]);
                 setCurrentWord(null);
             }

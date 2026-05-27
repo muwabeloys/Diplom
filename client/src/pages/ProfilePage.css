@@ -250,6 +250,10 @@
 
 /* Адаптив для мобильных */
 @media (max-width: 480px) {
+    .profile-content {
+        padding: 0 10px;
+    }
+
     .stats-grid {
         grid-template-columns: 1fr;
     }
@@ -259,7 +263,7 @@
         align-items: center;
     }
 
-    .profile-content {
-        padding: 0 10px;
+    .profile-header {
+        padding: 15px;
     }
 }
