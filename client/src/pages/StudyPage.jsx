@@ -31,18 +31,15 @@ export default function StudyPage() {
 
     const loadInitialStats = async () => {
         try {
-            // Проверяем сохранённую статистику за сегодня
-            const saved = localStorage.getItem('studyStats');
-            if (saved) {
-                const { stats: savedStats, date } = JSON.parse(saved);
-                if (date === new Date().toDateString()) {
-                    setStats(savedStats);
-                    return;
-                }
-            }
-            // Иначе грузим из API
-            const data = await api.getWordsForStudy('en', wordsPerDay);
-            setStats(data.stats);
+            // ВСЕГДА грузим актуальную статистику из API
+            const wordsData = await api.getWordsForStudy('en', 100);
+            const profileData = await api.getProfile();
+
+            setStats({
+                total: profileData.user?.stats?.total_words || 0,
+                learned: profileData.user?.stats?.learned_words || 0,
+                due: wordsData.words.length,
+            });
         } catch (err) {
             console.error('Stats error:', err);
         }
@@ -57,11 +54,13 @@ export default function StudyPage() {
         }
     };
 
-    const loadWords = async () => {
+    const loadWords = async (limit) => {
         try {
-            const data = await api.getWordsForStudy('en', wordsPerDay);
+            const count = limit || wordsPerDay;
+            console.log('🔄 Загружаем слова, лимит:', count);
+            const data = await api.getWordsForStudy('en', count);
+            console.log('✅ Получено слов:', data.words.length);
             setWords(data.words);
-            // НЕ перезаписываем stats если они уже есть (после обновления)
             if (data.words.length > 0) {
                 setCurrentWord(data.words[0]);
                 setShowAnswer(false);
@@ -82,23 +81,14 @@ export default function StudyPage() {
             const remaining = words.slice(1);
 
             // Получаем актуальную статистику из API
+            const wordsData = await api.getWordsForStudy('en', 100);
             const profileData = await api.getProfile();
             if (profileData.user?.stats) {
-                const apiStats = profileData.user.stats;
                 setStats({
-                    total: apiStats.total_words || 0,
-                    learned: apiStats.learned_words || 0,
-                    due: Math.max(0, (apiStats.total_words - apiStats.learned_words)),
+                    total: profileData.user.stats.total_words || 0,
+                    learned: profileData.user.stats.learned_words || 0,
+                    due: wordsData.words.length,
                 });
-
-                localStorage.setItem('studyStats', JSON.stringify({
-                    stats: {
-                        total: apiStats.total_words || 0,
-                        learned: apiStats.learned_words || 0,
-                        due: Math.max(0, (apiStats.total_words - apiStats.learned_words)),
-                    },
-                    date: new Date().toDateString()
-                }));
             }
 
             if (remaining.length > 0) {
@@ -164,7 +154,7 @@ export default function StudyPage() {
                                     className={`btn-count ${wordsPerDay === num ? 'active' : ''}`}
                                     onClick={() => {
                                         setWordsPerDay(num);
-                                        loadWords();
+                                        loadWords(num);
                                     }}
                                 >
                                     {num}
