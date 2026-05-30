@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { api } from '../api/client';
 import './AddWordPage.css';
+import { translateWord } from '../api/translator';
 
 const categories = [
     { value: 'basics', label: '📝 Основы' },
@@ -9,27 +10,6 @@ const categories = [
     { value: 'work', label: '💼 Работа' },
     { value: 'hobbies', label: '🎨 Хобби' },
 ];
-
-// Функция перевода
-async function translateText(text, from, to) {
-    try {
-        // Авто-определение: если текст на русском → переводим на английский и наоборот
-        const isRussian = /[а-яё]/i.test(text);
-        const actualFrom = isRussian ? 'ru' : 'en';
-        const actualTo = isRussian ? 'en' : 'ru';
-
-        const res = await fetch(
-            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${actualFrom}|${actualTo}`
-        );
-        const data = await res.json();
-        if (data.responseStatus === 200) {
-            return data.responseData.translatedText;
-        }
-        return null;
-    } catch {
-        return null;
-    }
-}
 
 export default function AddWordPage({ onBack }) {
     const [form, setForm] = useState({
@@ -48,7 +28,7 @@ export default function AddWordPage({ onBack }) {
     const handleTranslateWord = async () => {
         if (!form.word) return;
         setTranslating(prev => ({ ...prev, word: true }));
-        const result = await translateText(form.word);
+        const result = await translateWord(form.word);
         if (result) setForm(prev => ({ ...prev, translation: result }));
         setTranslating(prev => ({ ...prev, word: false }));
     };
@@ -57,7 +37,7 @@ export default function AddWordPage({ onBack }) {
     const handleTranslateExample = async () => {
         if (!form.example) return;
         setTranslating(prev => ({ ...prev, example: true }));
-        const result = await translateText(form.example);
+        const result = await translateWord(form.example);
         if (result) setForm(prev => ({ ...prev, example_translation: result }));
         setTranslating(prev => ({ ...prev, example: false }));
     };
