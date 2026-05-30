@@ -1,0 +1,28 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram name="Страница-1" id="_UXoZh31NrixmWuiHjcs">
+    <mxGraphModel dx="1538" dy="1462" grid="0" gridSize="10" guides="1" tooltips="1" connect="0" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6Xdl9D0Dl7kyKFZL5XKb-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;ПОЛЬЗОВАТЕЛЬ&lt;/font&gt;" vertex="1">
+          <mxGeometry height="70" width="270" x="190" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="6Xdl9D0Dl7kyKFZL5XKb-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="323" width="819" x="-84.5" y="342" as="geometry" />
+        </mxCell>
+        <mxCell id="6Xdl9D0Dl7kyKFZL5XKb-4" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;КЛИНЕТСКАЯ ЧАСТЬ (Frontend)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="73" width="429" x="110.5" y="359" as="geometry" />
+        </mxCell>
+        <mxCell id="6Xdl9D0Dl7kyKFZL5XKb-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;" value="&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;font style=&quot;font-size: 24px;&quot;&gt;React&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;font style=&quot;font-size: 24px;&quot;&gt;Components&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="135" width="160" x="-27" y="485" as="geometry" />
+        </mxCell>
+        <mxCell id="6Xdl9D0Dl7kyKFZL5XKb-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;" value="&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;font style=&quot;font-size: 24px;&quot;&gt;React&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;font style=&quot;font-size: 24px;&quot;&gt;Router&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="135" width="171" x="176" y="485" as="geometry" />
+        </mxCell>
+        <mxCell id="6Xdl9D0Dl7kyKFZL5XKb-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;" value="&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 24px;&quot;&gt;API Client&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 24px;&quot;&gt;(axios/fetch)&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="135" width="302" x="390" y="483" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
