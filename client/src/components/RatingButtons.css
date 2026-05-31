@@ -59,3 +59,9 @@
     background: #2ed573;
     color: #1a1a2e;
 }
+
+@media (min-width: 600px) {
+    .rating-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
