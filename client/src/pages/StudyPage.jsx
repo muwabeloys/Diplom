@@ -56,7 +56,7 @@ export default function StudyPage() {
 
     const loadWords = async (limit) => {
         try {
-            const count = limit || wordsPerDay;
+            const count = (typeof limit === 'number') ? limit : wordsPerDay;
             console.log('🔄 Загружаем слова, лимит:', count);
             const data = await api.getWordsForStudy('en', count);
             console.log('✅ Получено слов:', data.words.length);
@@ -183,7 +183,7 @@ export default function StudyPage() {
                         <h2>Отлично!</h2>
                         <p>Все слова на сегодня повторены</p>
                         <p className="sub-text">Возвращайтесь позже для повторения</p>
-                        <button onClick={loadWords} className="btn-refresh">
+                        <button onClick={() => loadWords()} className="btn-refresh">
                             🔄 Проверить ещё раз
                         </button>
                     </div>

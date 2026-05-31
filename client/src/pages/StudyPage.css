@@ -38,17 +38,6 @@
     flex-wrap: wrap;
 }
 
-.btn-profile {
-    padding: 6px 10px;
-    background: #7c8aff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 12px;
-    white-space: nowrap;
-}
-
 .btn-logout:hover {
     background: #3a3a5a;
     color: #e0e0e0;
