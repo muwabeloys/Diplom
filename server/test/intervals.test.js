@@ -186,6 +186,14 @@ describe('🧠 Интервальное повторение (SM-2)', () => {
             console.log('   ✅ Завтрашнее слово доступно!\n');
         });
 
+        it('Слова с датой из прошлого доступны', () => {
+            db.prepare("INSERT INTO words (id, user_id, word, translation, level, next_review) VALUES (99, 1, 'Old', 'Старое', 2, '2020-01-01 10:00:00')").run();
+
+            const words = getWordsForStudy();
+            const found = words.find(w => w.id === 99);
+            expect(found).toBeTruthy();
+        });
+
         it('Слово с next_review = послезавтра — НЕ доступно', () => {
             console.log('\n--- Тест 9: Недоступность "послезавтрашнего" слова ---');
             db.prepare("UPDATE words SET next_review = date('now', '+2 day') WHERE id = 2").run();

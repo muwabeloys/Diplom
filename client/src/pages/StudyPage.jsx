@@ -31,7 +31,7 @@ export default function StudyPage() {
 
     const loadInitialStats = async () => {
         try {
-            // ВСЕГДА грузим актуальную статистику из API
+            // грузим актуальную статистику из API
             const wordsData = await api.getWordsForStudy('en', 100);
             const profileData = await api.getProfile();
 
